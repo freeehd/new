@@ -12,8 +12,12 @@ export default function Confetti() {
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+    // Store canvas dimensions to avoid null checks later
+    let canvasWidth = window.innerWidth
+    let canvasHeight = window.innerHeight
+
+    canvas.width = canvasWidth
+    canvas.height = canvasHeight
 
     const colors = ["#ec4899", "#d946ef", "#8b5cf6", "#f472b6", "#f9a8d4"]
     const shapes = ["circle", "square", "triangle", "heart"]
@@ -30,7 +34,7 @@ export default function Confetti() {
       rotationSpeed: number
 
       constructor() {
-        this.x = Math.random() * canvas.width
+        this.x = Math.random() * canvasWidth
         this.y = -20 - Math.random() * 100
         this.size = Math.random() * 10 + 5
         this.color = colors[Math.floor(Math.random() * colors.length)]
@@ -46,9 +50,9 @@ export default function Confetti() {
         this.x += this.speedX
         this.rotation += this.rotationSpeed
 
-        if (this.y > canvas.height) {
+        if (this.y > canvasHeight) {
           this.y = -20
-          this.x = Math.random() * canvas.width
+          this.x = Math.random() * canvasWidth
         }
       }
 
@@ -99,7 +103,7 @@ export default function Confetti() {
     let animationFrameId: number
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight)
       confettiPieces.forEach((piece) => {
         piece.update()
         piece.draw()
@@ -110,8 +114,12 @@ export default function Confetti() {
     animate()
 
     const handleResize = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      if (canvas) {
+        canvasWidth = window.innerWidth
+        canvasHeight = window.innerHeight
+        canvas.width = canvasWidth
+        canvas.height = canvasHeight
+      }
     }
 
     window.addEventListener("resize", handleResize)
